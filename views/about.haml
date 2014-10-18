@@ -1,0 +1,17 @@
+.row
+  .col-md-6.col-md-offset-3
+    .jumbotron.page-header
+      %h1 Privat-Vipiska
+      %p Получи выписку из Приват24
+
+    %form{method: 'post', action: '/encrypt'}
+      .form-group
+        %label Номер карты
+        %input.form-control{name: 'card', type: 'text'}
+      .form-group
+        %label ID мерчанта
+        %input.form-control{name: 'merchant_id'}
+      .form-group
+        %label Пароль мерчанта
+        %input.form-control{name: 'password'}
+      %button.btn.btn-default{type: 'submit'} Получить ссылку
