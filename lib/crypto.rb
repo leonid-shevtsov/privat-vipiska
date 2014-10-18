@@ -1,15 +1,16 @@
+require 'yaml'
 require 'base64'
 require 'cgi'
 
 module Crypto
-  VIPISKA_SETTINGS = {key: 'somekeysomekeysomekeysomekeysomekeysomekey'}
+  VIPISKA_SETTINGS = YAML.load_file('settings.yml')
 
   class << self
 
     def encrypt_params(params)
       cipher = OpenSSL::Cipher.new('AES-128-CBC')
       cipher.encrypt
-      cipher.key = VIPISKA_SETTINGS[:key]
+      cipher.key = Base64.decode64(VIPISKA_SETTINGS[:key])
       iv = cipher.random_iv
       params_string = [params[:card], params[:merchant_id], params[:password]].join('|')
       encrypted = cipher.update(params_string) + cipher.final
@@ -19,7 +20,7 @@ module Crypto
     def decrypt_params(params)
       cipher = OpenSSL::Cipher.new('AES-128-CBC')
       cipher.decrypt
-      cipher.key = VIPISKA_SETTINGS[:key]
+      cipher.key = Base64.decode64(VIPISKA_SETTINGS[:key])
       cipher.iv = Base64.urlsafe_decode64(params[:i])
       decrypted = cipher.update(Base64.urlsafe_decode64(params[:e])) + cipher.final
       decrypted_params = {}

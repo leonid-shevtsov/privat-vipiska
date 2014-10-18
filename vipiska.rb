@@ -16,7 +16,11 @@ post '/encrypt' do
 end
 
 get '/vipiska.csv' do
-  decrypted_params = Crypto.decrypt_params(params)
-  headers "Content-Type" => "application/csv; charset=utf-8"
-  PrivatbankClient.new(decrypted_params).vipiska_csv
+  begin
+    decrypted_params = Crypto.decrypt_params(params)
+    headers "Content-Type" => "application/csv; charset=utf-8"
+    PrivatbankClient.new(decrypted_params).vipiska_csv
+  rescue OpenSSL::Cipher::CipherError
+    'Bad encryption params'
+  end
 end
